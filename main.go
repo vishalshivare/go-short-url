@@ -4,9 +4,11 @@ import (
 	"fmt"
 	"go-short-url/config"
 	"go-short-url/handlers"
+	"go-short-url/services"
 	"log"
 	"net/http"
 
+	"github.com/go-chi/chi/middleware"
 	chi "github.com/go-chi/chi/v5"
 )
 
@@ -14,15 +16,17 @@ func main() {
 
 	config.ReadConfig()
 
-	r := chi.NewRouter()
+	router := chi.NewRouter()
+	// Middleware setup
+	router.Use(middleware.Logger)
 
 	// Routes
-	r.Post("/short", handlers.ShortenURL)
-	r.Get("/info", handlers.GetInfo)
+	urlSvc := services.NewShortenURLServicer()
+	router.Mount("/v1/urlshorter", handlers.NewShortenURLHandler(urlSvc))
 
 	// Start the server
 	address := fmt.Sprintf("%s:%d", config.Cfg.Service.Address, config.Cfg.Service.Port)
 	log.Println("short url server started at", address)
-	http.ListenAndServe(address, r)
+	http.ListenAndServe(address, router)
 
 }
