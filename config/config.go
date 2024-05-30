@@ -1,6 +1,7 @@
 package config
 
 import (
+	"fmt"
 	"go-short-url/utils"
 	"os"
 )
@@ -25,4 +26,10 @@ func ReadConfig() {
 	if err := utils.ParseYamlFile(defaultConfigFile, Cfg); err != nil {
 		os.Exit(2)
 	}
+}
+
+func GetBaseURL() string {
+	return fmt.Sprintf("http://%s:%d/v1/urlshorter",
+		Cfg.Service.Address,
+		Cfg.Service.Port)
 }

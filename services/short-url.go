@@ -27,15 +27,31 @@ func NewShortenURLServicer() ShortenURLServicer {
 	}
 }
 
-func (s *ShortenURLService) GetOrCreate(domain, long_url string) (string, error) {
-	if shortURL, exists := s.urlToShort[long_url]; exists {
+func (s *ShortenURLService) GetOrCreate(domain, longURL string) (string, error) {
+	// already exist then return same
+	if shortURL, exists := s.urlToShort[longURL]; exists {
 		s.count[domain]++
 		return shortURL, nil
 	}
 
-	shortURL := utils.GenerateShortURL(long_url)
-	s.shortToUrl[shortURL] = long_url
-	s.urlToShort[long_url] = shortURL
+	// logic to avoid collision
+	// if generated code from URL already exist then add a counter
+	// generater new util we find unique
+	shortURL := utils.GenerateShortURL(longURL)
+	if _, ok := s.shortToUrl[shortURL]; ok {
+		for i := 1; ; i++ {
+			shortURL = utils.GenerateShortURL(longURL)
+			if _, ok := s.shortToUrl[longURL]; !ok {
+				break
+			}
+		}
+	}
+
+	// adding on maps
+	s.shortToUrl[shortURL] = longURL
+	s.urlToShort[longURL] = shortURL
+
+	// increasing the counter for hits
 	s.count[domain]++
 
 	return shortURL, nil
