@@ -8,10 +8,10 @@ import (
 
 const (
 	DefaultConfigFileName string = "default.yaml"
-	DefaultConfigFolder   string = "./defaults"
 )
 
 var Cfg *Config
+var DefaultConfigFolder = "./defaults"
 
 type Config struct {
 	Service struct {
