@@ -4,7 +4,7 @@ package handlers
 import (
 	"encoding/json"
 	"fmt"
-	"go-short-url/config"
+	"go-short-url/configs"
 	"go-short-url/models"
 	"go-short-url/services"
 	"go-short-url/utils"
@@ -50,7 +50,7 @@ func (v1 *UrlHandlerV1) ShortenURL(w http.ResponseWriter, r *http.Request) {
 	}
 
 	w.WriteHeader(http.StatusOK)
-	if _, err := w.Write([]byte(fmt.Sprintf("%s/%s", config.GetBaseURL(), shortURL))); err != nil {
+	if _, err := w.Write([]byte(fmt.Sprintf("%s/%s", configs.GetBaseURL(), shortURL))); err != nil {
 		http.Error(w, "unable to process", http.StatusInternalServerError)
 		return
 	}

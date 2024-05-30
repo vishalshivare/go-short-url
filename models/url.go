@@ -16,7 +16,3 @@ func (r *RequestURL) Validate() error {
 	}
 	return nil
 }
-
-type ListURLs struct {
-	URLs []RequestURL `json:"urls"`
-}
