@@ -13,20 +13,29 @@ import (
 )
 
 func main() {
-
+	// load configs
 	configs.ReadConfig()
 
+	// initializing services
+	urlSvc := services.NewShortenURLServicer()
+
+	// creating router
+	router := createRouter(urlSvc)
+
+	// Start the server
+	address := fmt.Sprintf("%s:%d", configs.Cfg.Service.Address, configs.Cfg.Service.Port)
+
+	log.Println("short url server started at", address)
+	http.ListenAndServe(address, router)
+}
+
+func createRouter(urlSvc services.ShortenURLServicer) chi.Router {
 	router := chi.NewRouter()
 	// Middleware setup
 	router.Use(middleware.Logger)
 
 	// Routes
-	urlSvc := services.NewShortenURLServicer()
 	router.Mount("/v1/urlshorter", handlers.NewShortenURLHandler(urlSvc))
 
-	// Start the server
-	address := fmt.Sprintf("%s:%d", configs.Cfg.Service.Address, configs.Cfg.Service.Port)
-	log.Println("short url server started at", address)
-	http.ListenAndServe(address, router)
-
+	return router
 }

@@ -19,7 +19,7 @@ func TestGetDomain(t *testing.T) {
 			wantErr: false,
 		},
 		{
-			name:    "ShouldReturnYoutubeDomain",
+			name:    "ShouldReturnExampleDomain",
 			args:    args{rawUrl: "https://example.com/watch?v=k8AObcX8azM"},
 			want:    "example.com",
 			wantErr: false,
